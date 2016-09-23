@@ -2,15 +2,17 @@
   "public": {
     "google": {
       "apiKey": "AIzaSyCIZ5ZYiz7TZiDoy-vDZJMlMyWaWD76k2E"
-    },
-    "yelp": {
-      "apiKey": "gtXSU3_nSPAflF8ZFLvzEC24CNeSMyD13tcI9HGOHj7S8z_8hfMwpzXH3Mhmlu0Tho_gS7DuxcJKxpeK7-0J_fJQ4GNe-jh80Z0FTAvhfMClwNSF4uC1iRx5CxTiV3Yx"
     }
   },
   "private": {
     "yelp": {
+      "apiKey": "gtXSU3_nSPAflF8ZFLvzEC24CNeSMyD13tcI9HGOHj7S8z_8hfMwpzXH3Mhmlu0Tho_gS7DuxcJKxpeK7-0J_fJQ4GNe-jh80Z0FTAvhfMClwNSF4uC1iRx5CxTiV3Yx",
       "appID": "1kzwj2CsEzzJfzZcTli_aA",
       "appSecret": "kabtU0cSumUgO1FHIl2NRSPRtC4778ddkqD9ue8ucO93wbMmr6FygTXJ02JR5L2t"
+    },
+    "glassdoor": {
+      "partnerID": "95589",
+      "key": "iBJNsF0maOQ"
     }
   }
 }

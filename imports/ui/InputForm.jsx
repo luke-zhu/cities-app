@@ -1,19 +1,20 @@
 import React, { PropTypes } from 'react';
 import {
-  // Button,
   ControlLabel,
   FormControl,
   FormGroup,
 } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
-import { changeLocation, startUpdate } from './redux/actions.js';
+import CompaniesForm from './Companies/CompaniesForm.jsx';
+import InterestsForm from './Interests/InterestsForm.jsx';
+import { changeLocation, getGeocode } from './redux/actions.js';
 
-// A form made with react-boostrap
+// A form made with react-bootstrap
 // ControlLabel is a label
 // FormControl is a input
 // See PropTypes for prop data
-const UncontaintedInputForm = ({ location, handleLocChange, handleReturn }) => (
+const InputForm = ({ location, handleLocChange, handleReturn }) => (
   <form>
     <FormGroup>
       <ControlLabel>Location</ControlLabel>
@@ -22,44 +23,17 @@ const UncontaintedInputForm = ({ location, handleLocChange, handleReturn }) => (
         placeholder="Ex: San Francisco"
         value={location}
         onChange={handleLocChange}
-        onKeyPress={handleReturn}
+        onKeyPress={handleReturn(location)}
       />
     </FormGroup>
-    <FormGroup>
-      <ControlLabel>Company</ControlLabel>
-      <FormControl
-        type="text"
-        placeholder="Ex: McDonalds"
-      />
-      <ControlLabel>Salary</ControlLabel>
-      <FormControl
-        type="number"
-        placeholder="Ex: 10000"
-      />
-    </FormGroup>
-    <FormGroup controlId="formControlsSelectMultiple">
-      <ControlLabel>Interests</ControlLabel>
-      <FormControl
-        componentClass="select"
-        multiple
-      >
-        <option value="exercise">Exercise</option>
-        <option value="gaming">Gaming</option>
-        <option value="food">Food</option>
-        <option value="movies">Movies</option>
-        <option value="music">Music</option>
-        <option value="shopping">Shopping</option>
-        <option value="sports">Sports</option>
-        <option value="traveling">Travel</option>
-      </FormControl>
-    </FormGroup>
+    <CompaniesForm />
+    <InterestsForm />
   </form>
 );
 
 
-UncontaintedInputForm.propTypes = {
+InputForm.propTypes = {
   location: PropTypes.string.isRequired, // Location state prop
-  // handleHobbiesChange: PropTypes.func.isRequired,
   handleLocChange: PropTypes.func.isRequired, // Changes the location prop when input is changed
   handleReturn: PropTypes.func.isRequired,
 };
@@ -70,26 +44,14 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   handleLocChange: e => dispatch(changeLocation(e.target.value)),
-  /*
-  handleHobbiesChange: (e) => {
-    const selectedOptions = [];
-    for (let i = 0; i < e.target.options.length; i += 1) {
-      const option = e.target.options[i];
-      if (option.selected) {
-        selectedOptions.push(option.value);
+  handleReturn: location => (
+    (e) => {
+      if (e.key === 'Enter') {
+        console.log('Location entered!');
+        dispatch(getGeocode(location));
       }
     }
-    dispatch(changeHobbies(selectedOptions));
-  },
-  */
-  handleReturn: (e) => {
-    console.log(e);
-    if (e.key === 'Enter') {
-      dispatch(startUpdate('updateGeocode'));
-    }
-  },
+  ),
 });
 
-const InputForm = connect(mapStateToProps, mapDispatchToProps)(UncontaintedInputForm);
-
-export default InputForm;
+export default connect(mapStateToProps, mapDispatchToProps)(InputForm);
