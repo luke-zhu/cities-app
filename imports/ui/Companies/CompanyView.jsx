@@ -3,10 +3,13 @@ import React, { PropTypes } from 'react';
 const CompanyView = ({ companyObj }) => (
   <div>
     <h3>
-      <a href={companyObj.featuredReview.attributionURL}>
       {companyObj.name}
-      </a>
     </h3>
+    <h6>
+      <a href={companyObj.featuredReview ? companyObj.featuredReview.attributionURL : null}>
+      Reviews
+      </a>
+    </h6>
     <table className="table">
       <tbody>
         <tr>

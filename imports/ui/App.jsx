@@ -16,8 +16,7 @@ const store = createStore(reducers, applyMiddleware(thunkMiddleware));
 // HobbiesView displays nearby places related to activites
 const App = () => (
   <Provider store={store}>
-    <div className="container">
-      <h1>Cities App</h1>
+    <div>
       <InputForm />
       <OutputView />
     </div>

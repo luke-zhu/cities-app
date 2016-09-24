@@ -2,24 +2,24 @@ import { Meteor } from 'meteor/meteor';
 import { HTTP } from 'meteor/http';
 
 Meteor.methods({
-  'restAPI.getGooglePlaces': (name, lat, lng) => (
+  'restAPI.getGooglePlaces': (query, lat, lng) => (
     HTTP.get(
       'https://maps.googleapis.com/maps/api/place/textsearch/json?', {
         params: {
-          query: name,
+          query,
           key: Meteor.settings.public.google.apiKey,
           location: `${lat},${lng}`,
         },
       }
     )
   ),
-  'restAPI.getGoogleDistance': (lat, lng, event) => ([
-    event,
+  'restAPI.getGoogleDistance': (lat, lng, events) => ([
+    events,
     HTTP.get(
       'https://maps.googleapis.com/maps/api/distancematrix/json?', {
         params: {
           origins: `${lat},${lng}`,
-          destinations: event.location,
+          destinations: events.map(e => `${e.location}|`),
           key: Meteor.settings.public.google.apiKey,
         },
       }

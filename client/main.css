@@ -2,3 +2,8 @@
 table {
     table-layout: fixed;
 }
+
+.input {
+  background: linear-gradient(to bottom right, #786AB8, #B8786A);
+  color: #EEEEEE;
+}

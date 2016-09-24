@@ -14,41 +14,52 @@ import { changeLocation, getGeocode } from './redux/actions.js';
 // ControlLabel is a label
 // FormControl is a input
 // See PropTypes for prop data
-const InputForm = ({ location, handleLocChange, handleReturn }) => (
-  <form>
-    <FormGroup>
-      <ControlLabel>Location</ControlLabel>
-      <FormControl
-        type="text"
-        placeholder="Ex: San Francisco"
-        value={location}
-        onChange={handleLocChange}
-        onKeyPress={handleReturn(location)}
-      />
-    </FormGroup>
-    <CompaniesForm />
-    <InterestsForm />
-  </form>
+const InputForm = ({ state, handleLocChange, handleReturn }) => (
+  <div className="input">
+    <div className="container">
+      {state.lastInput ?
+        <h1>&#8706;Offers/&#8706;{state.lastInput}</h1> :
+        <h1>&#8706;Offers</h1>}
+      <form>
+        <FormGroup
+          controlId="formLocationText"
+          validationState={state.geocodeError ? 'error' : null}>
+          <ControlLabel>Location</ControlLabel>
+          <FormControl
+            type="text"
+            placeholder="Ex: San Francisco"
+            value={state.location}
+            onChange={handleLocChange}
+            onKeyPress={handleReturn(state)}
+          />
+          <FormControl.Feedback />
+        </FormGroup>
+        <CompaniesForm
+          location={state.location}
+        />
+        <InterestsForm lat={state.lat} lng={state.lng} />
+      </form>
+    </div>
+  </div>
 );
 
 
 InputForm.propTypes = {
-  location: PropTypes.string.isRequired, // Location state prop
+  state: PropTypes.object.isRequired, // Location state prop
   handleLocChange: PropTypes.func.isRequired, // Changes the location prop when input is changed
   handleReturn: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-  location: state.location,
+  state,
 });
 
 const mapDispatchToProps = dispatch => ({
   handleLocChange: e => dispatch(changeLocation(e.target.value)),
-  handleReturn: location => (
+  handleReturn: state => (
     (e) => {
       if (e.key === 'Enter') {
-        console.log('Location entered!');
-        dispatch(getGeocode(location));
+        dispatch(getGeocode(state));
       }
     }
   ),

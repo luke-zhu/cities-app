@@ -6,14 +6,27 @@ import moment from 'moment';
 
 const GamingView = ({ events }) => {
   const rows = [];
-  console.log(events);
-  events.forEach(e => rows.push(
-    <tr key={e[0].summary}>
-      <td>{e[0].summary}</td>
-      <td>{moment.duration(e[1], 'seconds').humanize()}</td>
-    </tr>
+  events.filter(e => e[1].status === 'OK' && e[1].duration.value < 36000)
+    .sort((e1, e2) => e1[1].duration.value - e2[1].duration.value)
+    .forEach(e => rows.push(
+      <tr key={e[0].summary}>
+        <td>{e[0].summary}</td>
+        <td>
+          {moment.duration(e[1].duration.value, 'seconds').humanize()}
+        </td>
+      </tr>
     )
   );
+  if (rows.length === 0) {
+    rows.push(
+      <tr key={'None notification'}>
+        <td>
+          There are no gaming events nearby.
+          Try typing in your location again.
+        </td>
+      </tr>
+    );
+  }
   return (
     <div>
       <h3>Gaming</h3>
@@ -21,7 +34,7 @@ const GamingView = ({ events }) => {
         <thead>
           <tr>
             <th>Event Name</th>
-            <th>Estimated Driving Duration</th>
+            <th>Estimated Drive Time</th>
           </tr>
         </thead>
         <tbody>

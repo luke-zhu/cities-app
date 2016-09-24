@@ -2,39 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { HTTP } from 'meteor/http';
 import moment from 'moment';
 
-
-// InputForm.jsx
-export const changeLocation = text => ({
-  type: 'CHANGE_LOCATION',
-  text,
+// Error action creator
+const handleError = errorName => ({
+  type: 'HANDLE_ERROR',
+  errorName,
 });
-
-const changeGeocode = (lat, lng) => ({
-  type: 'CHANGE_GEOCODE',
-  lat,
-  lng,
-});
-
-export const getGeocode = location => (
-  dispatch => (
-    HTTP.get(
-      'https://maps.googleapis.com/maps/api/geocode/json?', {
-        params: {
-          address: location,
-          key: Meteor.settings.public.google.apiKey,
-        },
-      }, (error, response) => {
-        if (error) {
-          console.log(error);
-        } else {
-          const lat = response.data.results[0].geometry.location.lat;
-          const lng = response.data.results[0].geometry.location.lng;
-          dispatch(changeGeocode(lat, lng));
-        }
-      }
-    )
-  )
-);
 
 // Companies/CompaniesForm.jsx
 export const changeCompany = company => ({
@@ -52,10 +24,9 @@ export const getCompanyData = (location, company) => (
     Meteor.call(
       'restAPI.getGlassdoorRatings', location, company,
       (error, response) => {
-        if (error) {
-          console.log(error);
-        } else if (!response.data.response.employers.length) {
-          console.log('No companies data');
+        if (error) console.log(error);
+        else if (!response.data.response.employers.length) {
+          dispatch(handleError('glassdoorError'));
         } else {
           dispatch(addCompany(response.data.response.employers[0]));
         }
@@ -65,26 +36,38 @@ export const getCompanyData = (location, company) => (
 );
 
 // Interests/InterestsForm.jsx
-const addGamingEvent = (event, distance) => ({
-  type: 'ADD_GAMING_EVENT',
-  event,
-  distance,
+
+const addMoviePlaces = moviePlaces => ({
+  type: 'ADD_MOVIE_PLACES',
+  moviePlaces,
 });
 
-const getDistance = (lat, lng, event) => (
+const getMoviePlaces = (lat, lng) => dispatch => (
+  Meteor.call('restAPI.getGooglePlaces', 'movies', lat, lng,
+    (error, response) => {
+      if (error) console.log(error);
+      else if (response.data.status === 'OK') {
+        dispatch(addMoviePlaces(response.data.results));
+      }
+    })
+);
+
+const addGamingEvents = (events, distances) => ({
+  type: 'ADD_GAMING_EVENTS',
+  events,
+  distances,
+});
+
+const getDistance = (lat, lng, events) => (
+  // Gets distance from Google Distance Matrix (Use sparingly)
   dispatch => (
-    Meteor.call('restAPI.getGoogleDistance', lat, lng, event,
+    Meteor.call('restAPI.getGoogleDistance', lat, lng, events,
       (error, response) => {
-        if (error) {
-          console.log(error);
-        } else if (response[1].data.rows[0].elements[0].status === 'NOT_FOUND') {
-          console.log('Not Found');
-        } else if (response[1].data.rows[0].elements[0].status === 'ZERO_RESULTS') {
-          console.log('Zero results');
-        } else {
-          dispatch(addGamingEvent(
-            response[0], // the event
-            response[1].data.rows[0].elements[0].duration.value
+        if (error) console.log(error);
+        else if (response[1].data.status === 'OK') {
+          dispatch(addGamingEvents(
+            response[0], // the events
+            response[1].data.rows[0].elements // the distance objects
           ));
         }
       }
@@ -105,12 +88,14 @@ const getGamingEvents = (lat, lng) => (
                   .toISOString(),
         },
       }, (error, response) => {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log(response);
-          for (let i = 0; i < 5; i += 1) {
-            dispatch(getDistance(lat, lng, response.data.items[i]));
+        if (error) console.log(error);
+        else {
+          for (let i = 0; i <= response.data.items.length / 25; i += 1) {
+            dispatch(getDistance(
+              lat,
+              lng,
+              response.data.items.slice(25 * i, 25 * (i + 1))
+            ));
           }
         }
       }
@@ -118,13 +103,15 @@ const getGamingEvents = (lat, lng) => (
   )
 );
 
-export const changeInterests = (interests, lat, lng) => (
+export const changeInterests = (interests, lat, lng, received) => (
   (dispatch) => {
     for (let i = 0; i < interests.length; i += 1) {
       switch (interests[i]) {
         case 'Gaming':
-          // Change so it does not call Google Distance Matrix every time!
-          dispatch(getGamingEvents(lat, lng));
+          if (!received.gaming) dispatch(getGamingEvents(lat, lng));
+          break;
+        case 'Movies':
+          if (!received.movies) dispatch(getMoviePlaces(lat, lng));
           break;
         default:
           break;
@@ -136,3 +123,44 @@ export const changeInterests = (interests, lat, lng) => (
     });
   }
 );
+
+// InputForm.jsx
+export const changeLocation = text => ({
+  type: 'CHANGE_LOCATION',
+  text,
+});
+
+const changeGeocode = (lat, lng) => ({
+  type: 'CHANGE_GEOCODE',
+  lat,
+  lng,
+});
+
+export const getGeocode = state => (
+  dispatch => (
+    HTTP.get(
+      'https://maps.googleapis.com/maps/api/geocode/json?', {
+        params: {
+          address: state.location,
+          key: Meteor.settings.public.google.apiKey,
+        },
+      }, (error, response) => {
+        if (error) console.log(error);
+        else if (response.data.status === 'ZERO_RESULTS') {
+          dispatch(handleError('geocodeError'));
+        } else {
+          const lat = response.data.results[0].geometry.location.lat;
+          const lng = response.data.results[0].geometry.location.lng;
+          dispatch(changeGeocode(lat, lng));
+          dispatch(changeInterests(state.interests, lat, lng, state.received));
+        }
+      }
+    )
+  )
+);
+
+// OutputForm.jsx
+export const switchTabs = tab => ({
+  type: 'SWITCH_TABS',
+  tab,
+});

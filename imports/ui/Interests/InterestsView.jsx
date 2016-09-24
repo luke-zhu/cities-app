@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import GamingView from './GamingView.jsx';
+import MoviesView from './MoviesView.jsx';
 
 const InterestsView = ({ interests }) => {
   const rows = [];
@@ -9,6 +10,9 @@ const InterestsView = ({ interests }) => {
     switch (interests[i]) {
       case 'Gaming':
         rows.push(<GamingView key={interests[i]} />);
+        break;
+      case 'Movies':
+        rows.push(<MoviesView key={interests[i]} />);
         break;
       default:
         rows.push(<h3 key={interests[i]}>{interests[i]}</h3>);

@@ -8,12 +8,12 @@ import { connect } from 'react-redux';
 
 import { changeInterests } from '../redux/actions.js';
 
-const InterestForm = ({ lat, lng, handleChange }) => (
+const InterestForm = ({ lat, lng, received, handleChange }) => (
   <FormGroup controlId="formControlsSelectMultiple">
     <ControlLabel>Interests</ControlLabel>
     <FormControl
       componentClass="select"
-      onChange={handleChange(lat, lng)}
+      onChange={handleChange(lat, lng, received)}
       multiple
     >
       <option value="Exercise">Exercise</option>
@@ -32,15 +32,16 @@ InterestForm.propTypes = {
   handleChange: PropTypes.func.isRequired,
   lat: PropTypes.number.isRequired,
   lng: PropTypes.number.isRequired,
+  received: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
-  lat: state.lat,
-  lng: state.lng,
+  received: state.received,
 });
 
 const mapDispatchToProps = dispatch => ({
-  handleChange: (lat, lng) => (e) => {
+  handleChange: (lat, lng, received) => (e) => {
+    console.log(received);
     const selectedOptions = [];
     for (let i = 0; i < e.target.options.length; i += 1) {
       const option = e.target.options[i];
@@ -48,7 +49,7 @@ const mapDispatchToProps = dispatch => ({
         selectedOptions.push(option.value);
       }
     }
-    dispatch(changeInterests(selectedOptions, lat, lng));
+    dispatch(changeInterests(selectedOptions, lat, lng, received));
   },
 });
 

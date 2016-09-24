@@ -11,8 +11,11 @@ import {
   changeCompany,
 } from '../redux/actions.js';
 
-const CompaniesForm = ({ location, company, handleChange, handleReturn }) => (
-  <FormGroup>
+const CompaniesForm = ({ location, company, handleChange, handleReturn, glassdoorError }) => (
+  <FormGroup
+    controlId="formCompanyText"
+    validationState={glassdoorError ? 'error' : null}
+  >
     <ControlLabel>Company</ControlLabel>
     <FormControl
       type="text"
@@ -21,6 +24,7 @@ const CompaniesForm = ({ location, company, handleChange, handleReturn }) => (
       onChange={handleChange}
       onKeyPress={handleReturn(location, company)}
     />
+    <FormControl.Feedback />
   </FormGroup>
 );
 
@@ -29,11 +33,12 @@ CompaniesForm.propTypes = {
   company: PropTypes.string.isRequired,
   handleReturn: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
+  glassdoorError: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
-  location: state.location,
   company: state.company,
+  glassdoorError: state.glassdoorError,
 });
 
 const mapDispatchToProps = dispatch => ({
