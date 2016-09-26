@@ -29,7 +29,7 @@ const GamingView = ({ events }) => {
   }
   return (
     <div>
-      <h3>Gaming</h3>
+      <h3>Nearby Gaming Events</h3>
       <table className="table">
         <thead>
           <tr>

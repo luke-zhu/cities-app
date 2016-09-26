@@ -37,17 +37,18 @@ export const getCompanyData = (location, company) => (
 
 // Interests/InterestsForm.jsx
 
-const addMoviePlaces = moviePlaces => ({
-  type: 'ADD_MOVIE_PLACES',
-  moviePlaces,
+const addPlaces = (interest, places) => ({
+  type: 'ADD_PLACES',
+  interest,
+  places,
 });
 
-const getMoviePlaces = (lat, lng) => dispatch => (
-  Meteor.call('restAPI.getGooglePlaces', 'movies', lat, lng,
+const getPlaces = (interest, lat, lng) => dispatch => (
+  Meteor.call('restAPI.getGooglePlaces', interest, lat, lng,
     (error, response) => {
       if (error) console.log(error);
       else if (response.data.status === 'OK') {
-        dispatch(addMoviePlaces(response.data.results));
+        dispatch(addPlaces(interest, response.data.results));
       }
     })
 );
@@ -111,7 +112,10 @@ export const changeInterests = (interests, lat, lng, received) => (
           if (!received.gaming) dispatch(getGamingEvents(lat, lng));
           break;
         case 'Movies':
-          if (!received.movies) dispatch(getMoviePlaces(lat, lng));
+          if (!received.movies) dispatch(getPlaces('movies', lat, lng));
+          break;
+        case 'Exercise':
+          if (!received.exercise) dispatch(getPlaces('gym', lat, lng));
           break;
         default:
           break;
@@ -152,7 +156,13 @@ export const getGeocode = state => (
           const lat = response.data.results[0].geometry.location.lat;
           const lng = response.data.results[0].geometry.location.lng;
           dispatch(changeGeocode(lat, lng));
-          dispatch(changeInterests(state.interests, lat, lng, state.received));
+          dispatch(changeInterests(
+            state.interests,
+            lat, lng, {
+              gaming: false,
+              movies: false,
+              exercise: false,
+            }));
         }
       }
     )

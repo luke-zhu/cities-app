@@ -18,7 +18,7 @@ const InputForm = ({ state, handleLocChange, handleReturn }) => (
   <div className="input">
     <div className="container">
       {state.lastInput ?
-        <h1>&#8706;Offers/&#8706;{state.lastInput}</h1> :
+        <h1>&#8706;Offers/&#8706;{state.selectedTab}</h1> :
         <h1>&#8706;Offers</h1>}
       <form>
         <FormGroup

@@ -1,7 +1,7 @@
 const initialState = {
   // General Visual
-  lastInput: '', // equals 'Company', 'Interests', used for tabs, title
-  
+  selectedTab: '', // equals 'Company', 'Interests', used for tabs, title
+
   // Companies
   // Useful props
   companies: [],
@@ -15,13 +15,15 @@ const initialState = {
   // Visual props
   location: '', // InputForm, real-time changes
   heading: '', // OutputView, geocode string name
-  
+
   interests: [],
   gamingEvents: [], // depend on location
   moviePlaces: [],
+  exercisePlaces: [],
   received: {
     movies: false,
     gaming: false,
+    exercise: false,
   },
 
   // ERRORS, if true, then red outline around input box
@@ -36,17 +38,17 @@ const reducers = (state = initialState, action) => {
       return Object.assign({}, state, {
         [action.errorName]: true,
       });
-    // OutputView.jsx
+      // OutputView.jsx
     case 'SWITCH_TABS':
       return Object.assign({}, state, {
-        lastInput: action.tab,
+        selectedTab: action.tab,
       });
-    // InputForm.jsx
+      // InputForm.jsx
     case 'CHANGE_LOCATION':
       return Object.assign({}, state, {
         location: action.text,
         // Reload gaming event distances
-        lastInput: 'Location',
+        selectedTab: 'Location',
       });
     case 'CHANGE_GEOCODE':
       return Object.assign({}, state, {
@@ -59,11 +61,12 @@ const reducers = (state = initialState, action) => {
         received: {
           movies: false,
           gaming: false,
+          exercise: false,
         },
         heading: `${state.location} Stats`,
         geocodeError: false,
       });
-    // Companies/CompaniesForm.jsx
+      // Companies/CompaniesForm.jsx
     case 'ADD_COMPANY':
       if (action.companyObj) {
         return Object.assign({}, state, {
@@ -77,14 +80,14 @@ const reducers = (state = initialState, action) => {
       return Object.assign({}, state, {
         company: action.company,
         // Tabs
-        lastInput: 'Company',
+        selectedTab: 'Company',
       });
-    // Interests/InterestsForm.jsx
+      // Interests/InterestsForm.jsx
     case 'CHANGE_INTERESTS':
       return Object.assign({}, state, {
         interests: action.interests,
         // Tabs
-        lastInput: 'Interests',
+        selectedTab: 'Interests',
       });
     case 'ADD_GAMING_EVENTS':
       return Object.assign({}, state, {
@@ -97,16 +100,30 @@ const reducers = (state = initialState, action) => {
         received: {
           movies: state.received.movies,
           gaming: true,
+          exercise: state.received.exercise,
         },
       });
-    case 'ADD_MOVIE_PLACES':
-      return Object.assign({}, state, {
-        moviePlaces: action.moviePlaces,
-        received: {
-          movies: true,
-          gaming: state.received.gaming,
-        },
-      });
+    case 'ADD_PLACES':
+      if (action.interest === 'movies') {
+        return Object.assign({}, state, {
+          moviePlaces: action.places,
+          received: {
+            movies: true,
+            gaming: state.received.gaming,
+            exercise: state.received.exercise,
+          },
+        });
+      } else if (action.interest === 'gym') {
+        return Object.assign({}, state, {
+          exercisePlaces: action.places,
+          received: {
+            movies: state.received.movies,
+            gaming: state.received.gaming,
+            exercise: true,
+          },
+        });
+      }
+      return state;
     default:
       return state;
   }

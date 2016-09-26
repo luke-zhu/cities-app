@@ -32,7 +32,7 @@ OutputView.propTypes = {
 const mapStateToProps = state => ({
   location: state.location,
   heading: state.heading,
-  selectedTab: state.lastInput,
+  selectedTab: state.selectedTab,
 });
 
 const mapDispatchToProps = dispatch => ({

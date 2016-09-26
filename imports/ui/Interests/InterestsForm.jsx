@@ -41,7 +41,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   handleChange: (lat, lng, received) => (e) => {
-    console.log(received);
     const selectedOptions = [];
     for (let i = 0; i < e.target.options.length; i += 1) {
       const option = e.target.options[i];
