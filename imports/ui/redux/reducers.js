@@ -1,12 +1,13 @@
 const initialState = {
   // General Visual
   selectedTab: '', // equals 'Company', 'Interests', used for tabs, title
-
+  interestsTab: '',
   // Companies
   // Useful props
   companies: [],
   // Visual props
   company: '', // CompaniesForm, real-time changes
+  selectedCompany: '', // the selected company tab
 
   // Location
   // Useful props
@@ -67,12 +68,17 @@ const reducers = (state = initialState, action) => {
         geocodeError: false,
       });
       // Companies/CompaniesForm.jsx
+    case 'SWITCH_COMPANIES_TAB':
+      return Object.assign({}, state, {
+        selectedCompany: action.company,
+      });
     case 'ADD_COMPANY':
       if (action.companyObj) {
         return Object.assign({}, state, {
           company: '',
           companies: [action.companyObj, ...state.companies],
           glassdoorError: false,
+          selectedCompany: action.companyObj.name,
         });
       }
       return state;
@@ -83,10 +89,15 @@ const reducers = (state = initialState, action) => {
         selectedTab: 'Company',
       });
       // Interests/InterestsForm.jsx
+    case 'SWITCH_INTEREST_TABS':
+      return Object.assign({}, state, {
+        interestsTab: action.interest,
+      });
     case 'CHANGE_INTERESTS':
       return Object.assign({}, state, {
         interests: action.interests,
         // Tabs
+        interestsTab: action.interests[0],
         selectedTab: 'Interests',
       });
     case 'ADD_GAMING_EVENTS':

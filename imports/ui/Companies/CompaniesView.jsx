@@ -1,15 +1,28 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Nav, NavItem } from 'react-bootstrap';
 
 import CompanyView from './CompanyView.jsx';
+import { switchCompaniesTab } from '../redux/actions.js';
 
-const CompaniesView = ({ company, companies }) => {
+const CompaniesView = ({ company, companies, selectedCompany, handleSelect }) => {
   const rows = [];
-  companies.forEach(c => rows.push(
-    <CompanyView companyObj={c} key={c.name} />
-  ));
+  const navItems = [];
+  companies.filter((e, i) => i <= 10).forEach((c) => {
+    navItems.push(<NavItem eventKey={c.name} key={c.name}>{c.name}</NavItem>);
+    if (c.name === selectedCompany) {
+      rows.push(<CompanyView companyObj={c} key={c.name} />);
+    }
+  });
   return (
     <div>
+      <Nav
+        bsStyle="pills"
+        activeKey={selectedCompany}
+        onSelect={handleSelect}
+      >
+        {navItems}
+      </Nav>
       <h3>{company}</h3>
       {rows}
       <h6>
@@ -28,12 +41,19 @@ const CompaniesView = ({ company, companies }) => {
 CompaniesView.propTypes = {
   company: PropTypes.string.isRequired,
   companies: PropTypes.array.isRequired,
+  selectedCompany: PropTypes.string.isRequired,
+  handleSelect: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   company: state.company,
   companies: state.companies,
+  selectedCompany: state.selectedCompany,
 });
 
-export default connect(mapStateToProps)(CompaniesView);
+const mapDispatchToProps = dispatch => ({
+  handleSelect: eventKey => dispatch(switchCompaniesTab(eventKey)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CompaniesView);
 

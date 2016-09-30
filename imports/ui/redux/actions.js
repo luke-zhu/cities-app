@@ -9,6 +9,11 @@ const handleError = errorName => ({
 });
 
 // Companies/CompaniesForm.jsx
+export const switchCompaniesTab = company => ({
+  type: 'SWITCH_COMPANIES_TAB',
+  company,
+});
+
 export const changeCompany = company => ({
   type: 'CHANGE_COMPANY',
   company,
@@ -36,6 +41,11 @@ export const getCompanyData = (location, company) => (
 );
 
 // Interests/InterestsForm.jsx
+
+export const switchInterestsTabs = interest => ({
+  type: 'SWITCH_INTEREST_TABS',
+  interest,
+});
 
 const addPlaces = (interest, places) => ({
   type: 'ADD_PLACES',
