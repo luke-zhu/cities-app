@@ -23,7 +23,7 @@ const InterestForm = ({ lat, lng, received, handleChange }) => (
       <option value="Music">Music</option>
       <option value="Shopping">Shopping</option>
       <option value="Sports">Sports</option>
-      <option value="Traveling">Travel</option>
+      <option value="Travel">Travel</option>
     </FormControl>
   </FormGroup>
 );

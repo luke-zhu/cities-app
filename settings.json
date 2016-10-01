@@ -13,6 +13,10 @@
     "glassdoor": {
       "partnerID": "95589",
       "key": "iBJNsF0maOQ"
+    },
+    "foursquare": {
+      "clientID": "KDIR2PHZIKXF5N5ELPMR3F3IMTE2PFXY3VGJ5VJ50CMYA5FV",
+      "clientSecret": "NAZLEH4RCF102YUYTDV1AK21E0V55H33XPJVBBPDSFEFZH3Z"
     }
   }
 }

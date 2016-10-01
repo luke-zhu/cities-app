@@ -2,6 +2,19 @@ import { Meteor } from 'meteor/meteor';
 import { HTTP } from 'meteor/http';
 
 Meteor.methods({
+  'restAPI.getFoursquarePlaces': (query, lat, lng) => (
+    HTTP.get(
+      'https://api.foursquare.com/v2/venues/search?', {
+        params: {
+          client_id: Meteor.settings.private.foursquare.clientID,
+          client_secret: Meteor.settings.private.foursquare.clientSecret,
+          v: 20130815,
+          ll: `${lat},${lng}`,
+          query,
+        },
+      }
+    )
+  ),
   'restAPI.getGooglePlaces': (query, lat, lng) => (
     HTTP.get(
       'https://maps.googleapis.com/maps/api/place/textsearch/json?', {
@@ -43,8 +56,6 @@ Meteor.methods({
       )
     );
   },
-    /*
-    */
   /*
   'restAPI.getYelpPlaces': (name, lat, lng) => HTTP.get(
     'https://api.yelp.com/v3/businesses/search', {

@@ -21,10 +21,18 @@ const initialState = {
   gamingEvents: [], // depend on location
   moviePlaces: [],
   exercisePlaces: [],
+  foodPlaces: [],
+  musicPlaces: [],
+  shoppingPlaces: [],
+  sportsTeams: [],
+  travelPlaces: [],
+
   received: {
     movies: false,
     gaming: false,
     exercise: false,
+    travel: false,
+    music: false,
   },
 
   // ERRORS, if true, then red outline around input box
@@ -63,6 +71,8 @@ const reducers = (state = initialState, action) => {
           movies: false,
           gaming: false,
           exercise: false,
+          travel: false,
+          music: false,
         },
         heading: `${state.location} Stats`,
         geocodeError: false,
@@ -112,6 +122,8 @@ const reducers = (state = initialState, action) => {
           movies: state.received.movies,
           gaming: true,
           exercise: state.received.exercise,
+          travel: state.received.travel,
+          music: state.received.music,
         },
       });
     case 'ADD_PLACES':
@@ -122,6 +134,8 @@ const reducers = (state = initialState, action) => {
             movies: true,
             gaming: state.received.gaming,
             exercise: state.received.exercise,
+            travel: state.received.travel,
+            music: state.received.music,
           },
         });
       } else if (action.interest === 'gym') {
@@ -131,6 +145,33 @@ const reducers = (state = initialState, action) => {
             movies: state.received.movies,
             gaming: state.received.gaming,
             exercise: true,
+            travel: state.received.travel,
+            music: state.received.music,
+          },
+        });
+      } else if (action.interest === 'airports') {
+        return Object.assign({}, state, {
+          travelPlaces: action.places,
+          received: {
+            movies: state.received.movies,
+            gaming: state.received.gaming,
+            exercise: state.received.exercise,
+            travel: true,
+            music: state.received.music,
+          },
+        });
+      }
+      return state;
+    case 'ADD_PLACES_FOURSQUARE':
+      if (action.interest === 'music and venues') {
+        return Object.assign({}, state, {
+          musicPlaces: action.venues,
+          received: {
+            movies: state.received.music,
+            gaming: state.received.gaming,
+            exercise: state.received.exercise,
+            travel: state.received.travel,
+            music: true,
           },
         });
       }

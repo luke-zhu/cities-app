@@ -6,12 +6,12 @@ import CompanyView from './CompanyView.jsx';
 import { switchCompaniesTab } from '../redux/actions.js';
 
 const CompaniesView = ({ company, companies, selectedCompany, handleSelect }) => {
-  const rows = [];
+  let view;
   const navItems = [];
   companies.filter((e, i) => i <= 10).forEach((c) => {
     navItems.push(<NavItem eventKey={c.name} key={c.name}>{c.name}</NavItem>);
     if (c.name === selectedCompany) {
-      rows.push(<CompanyView companyObj={c} key={c.name} />);
+      view = <CompanyView companyObj={c} key={c.name} />;
     }
   });
   return (
@@ -24,7 +24,7 @@ const CompaniesView = ({ company, companies, selectedCompany, handleSelect }) =>
         {navItems}
       </Nav>
       <h3>{company}</h3>
-      {rows}
+      {view}
       <h6>
         <a href="https://www.glassdoor.com/index.htm">
           powered by

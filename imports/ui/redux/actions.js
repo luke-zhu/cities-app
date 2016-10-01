@@ -47,6 +47,23 @@ export const switchInterestsTabs = interest => ({
   interest,
 });
 
+const addPlacesFoursquare = (interest, venues) => ({
+  type: 'ADD_PLACES_FOURSQUARE',
+  interest,
+  venues,
+});
+
+const getPlacesFoursquare = (interest, lat, lng) => dispatch => (
+  Meteor.call('restAPI.getFoursquarePlaces', interest, lat, lng,
+    (error, response) => {
+      if (error) console.log(error);
+      else if (response) { // Foursquare
+        dispatch(addPlacesFoursquare(interest, response.data.response.venues));
+      }
+    }
+  )
+);
+
 const addPlaces = (interest, places) => ({
   type: 'ADD_PLACES',
   interest,
@@ -58,9 +75,11 @@ const getPlaces = (interest, lat, lng) => dispatch => (
     (error, response) => {
       if (error) console.log(error);
       else if (response.data.status === 'OK') {
+      // Google
         dispatch(addPlaces(interest, response.data.results));
       }
-    })
+    }
+  )
 );
 
 const addGamingEvents = (events, distances) => ({
@@ -127,6 +146,12 @@ export const changeInterests = (interests, lat, lng, received) => (
         case 'Exercise':
           if (!received.exercise) dispatch(getPlaces('gym', lat, lng));
           break;
+        case 'Travel':
+          if (!received.travel) dispatch(getPlaces('airports', lat, lng));
+          break;
+        case 'Music':
+          if (!received.music) dispatch(getPlacesFoursquare('music and venues', lat, lng));
+          break;
         default:
           break;
       }
@@ -172,6 +197,8 @@ export const getGeocode = state => (
               gaming: false,
               movies: false,
               exercise: false,
+              travel: false,
+              music: false,
             }));
         }
       }
