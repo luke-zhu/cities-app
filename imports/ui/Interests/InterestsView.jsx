@@ -7,6 +7,8 @@ import MoviesView from './MoviesView.jsx';
 import ExerciseView from './ExerciseView.jsx';
 import TravelView from './TravelView.jsx';
 import MusicView from './MusicView.jsx';
+import ShoppingView from './ShoppingView.jsx';
+import SportsView from './SportsView.jsx';
 import { switchInterestsTabs } from '../redux/actions.js';
 
 // Note: interests are filtered at mapStateToProps
@@ -36,6 +38,12 @@ const InterestsView = ({ interests, interestsTab, handleSelect }) => {
       break;
     case 'Music':
       view = <MusicView key={interestsTab} />;
+      break;
+    case 'Shopping':
+      view = <ShoppingView key={interestsTab} />;
+      break;
+    case 'Sports':
+      view = <SportsView key={interestsTab} />;
       break;
     default:
       view = <h3 key={interestsTab}>{interestsTab}</h3>;

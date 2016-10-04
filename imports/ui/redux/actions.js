@@ -34,6 +34,11 @@ export const getCompanyData = (location, company) => (
           dispatch(handleError('glassdoorError'));
         } else {
           dispatch(addCompany(response.data.response.employers[0]));
+          /*
+          Meteor.users.update(this.userId, {
+            $push: { companies: response.data.response.employers[0] },
+          });
+          */
         }
       }
     )
@@ -152,6 +157,9 @@ export const changeInterests = (interests, lat, lng, received) => (
         case 'Music':
           if (!received.music) dispatch(getPlacesFoursquare('music and venues', lat, lng));
           break;
+        case 'Shopping':
+          if (!received.shopping) dispatch(getPlaces('shopping', lat, lng));
+          break;
         default:
           break;
       }
@@ -168,6 +176,30 @@ export const changeLocation = text => ({
   type: 'CHANGE_LOCATION',
   text,
 });
+
+const changeTemperature = (high, low) => ({
+  type: 'CHANGE_TEMPERATURE',
+  high,
+  low,
+});
+
+const getTemperature = (lat, lng) => (
+  dispatch => (
+    HTTP.get(
+      `http://api.wunderground.com/api/${Meteor.settings.public.wunderground.keyID}/almanac/q/${lat},${lng}.json`,
+      null,
+      (error, response) => {
+        if (error) console.log(error);
+        else if (response) {
+          dispatch(changeTemperature(
+            response.data.almanac.temp_high.normal.F,
+            response.data.almanac.temp_low.normal.F
+          ));
+        }
+      }
+    )
+  )
+);
 
 const changeGeocode = (lat, lng) => ({
   type: 'CHANGE_GEOCODE',
@@ -191,15 +223,10 @@ export const getGeocode = state => (
           const lat = response.data.results[0].geometry.location.lat;
           const lng = response.data.results[0].geometry.location.lng;
           dispatch(changeGeocode(lat, lng));
+          dispatch(getTemperature(lat, lng));
           dispatch(changeInterests(
             state.interests,
-            lat, lng, {
-              gaming: false,
-              movies: false,
-              exercise: false,
-              travel: false,
-              music: false,
-            }));
+            lat, lng, {}));
         }
       }
     )

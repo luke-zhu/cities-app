@@ -6,9 +6,12 @@ import InterestsView from './Interests/InterestsView.jsx';
 import CompaniesView from './Companies/CompaniesView.jsx';
 import { switchTabs } from './redux/actions.js';
 
-const OutputView = ({ selectedTab, location, heading, handleSelect }) => (
+const OutputView = ({ selectedTab, location, heading, handleSelect, tempHigh, tempLow }) => (
   <div className="container">
     <h3>{location === '' ? heading : location}</h3>
+    {!isNaN(tempHigh) ?
+      <h4>Average High: {tempHigh}&deg;F Average Low: {tempLow}&deg;F</h4> :
+      null}
     <Nav
       bsStyle="tabs"
       activeKey={selectedTab}
@@ -27,12 +30,16 @@ OutputView.propTypes = {
   heading: PropTypes.string.isRequired,
   selectedTab: PropTypes.string.isRequired,
   handleSelect: PropTypes.func.isRequired,
+  tempHigh: PropTypes.number.isRequired,
+  tempLow: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = state => ({
   location: state.location,
   heading: state.heading,
   selectedTab: state.selectedTab,
+  tempHigh: state.tempHigh,
+  tempLow: state.tempLow,
 });
 
 const mapDispatchToProps = dispatch => ({

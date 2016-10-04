@@ -1,3 +1,5 @@
+import { Meteor } from 'meteor/meteor';
+
 const initialState = {
   // General Visual
   selectedTab: '', // equals 'Company', 'Interests', used for tabs, title
@@ -13,6 +15,8 @@ const initialState = {
   // Useful props
   lat: NaN, // InputForm, CompaniesForm,
   lng: NaN, //  Use these for location to reduce HTTP calls
+  tempHigh: NaN,
+  tempLow: NaN,
   // Visual props
   location: '', // InputForm, real-time changes
   heading: '', // OutputView, geocode string name
@@ -73,9 +77,15 @@ const reducers = (state = initialState, action) => {
           exercise: false,
           travel: false,
           music: false,
+          shopping: false,
         },
         heading: `${state.location} Stats`,
         geocodeError: false,
+      });
+    case 'CHANGE_TEMPERATURE':
+      return Object.assign({}, state, {
+        tempHigh: action.high,
+        tempLow: action.low,
       });
       // Companies/CompaniesForm.jsx
     case 'SWITCH_COMPANIES_TAB':
@@ -124,6 +134,7 @@ const reducers = (state = initialState, action) => {
           exercise: state.received.exercise,
           travel: state.received.travel,
           music: state.received.music,
+          shopping: state.received.shopping,
         },
       });
     case 'ADD_PLACES':
@@ -136,6 +147,7 @@ const reducers = (state = initialState, action) => {
             exercise: state.received.exercise,
             travel: state.received.travel,
             music: state.received.music,
+            shopping: state.received.shopping,
           },
         });
       } else if (action.interest === 'gym') {
@@ -147,6 +159,7 @@ const reducers = (state = initialState, action) => {
             exercise: true,
             travel: state.received.travel,
             music: state.received.music,
+            shopping: state.received.shopping,
           },
         });
       } else if (action.interest === 'airports') {
@@ -158,6 +171,19 @@ const reducers = (state = initialState, action) => {
             exercise: state.received.exercise,
             travel: true,
             music: state.received.music,
+            shopping: state.received.shopping,
+          },
+        });
+      } else if (action.interest === 'shopping') {
+        return Object.assign({}, state, {
+          shoppingPlaces: action.places,
+          received: {
+            movies: state.received.movies,
+            gaming: state.received.gaming,
+            exercise: state.received.exercise,
+            travel: state.received.travel,
+            music: state.received.music,
+            shopping: true,
           },
         });
       }
@@ -172,11 +198,13 @@ const reducers = (state = initialState, action) => {
             exercise: state.received.exercise,
             travel: state.received.travel,
             music: true,
+            shopping: state.received.shopping,
           },
         });
       }
       return state;
     default:
+      console.log(Meteor.user());
       return state;
   }
 };

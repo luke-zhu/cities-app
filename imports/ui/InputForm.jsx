@@ -6,6 +6,7 @@ import {
 } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
+import AccountsUIWrapper from './AccountsUIWrapper.jsx';
 import CompaniesForm from './Companies/CompaniesForm.jsx';
 import InterestsForm from './Interests/InterestsForm.jsx';
 import { changeLocation, getGeocode } from './redux/actions.js';
@@ -20,10 +21,12 @@ const InputForm = ({ state, handleLocChange, handleReturn }) => (
       {state.lastInput ?
         <h1>&#8706;Offers/&#8706;{state.selectedTab}</h1> :
         <h1>&#8706;Offers</h1>}
+      <AccountsUIWrapper />
       <form>
         <FormGroup
           controlId="formLocationText"
-          validationState={state.geocodeError ? 'error' : null}>
+          validationState={state.geocodeError ? 'error' : null}
+        >
           <ControlLabel>Location</ControlLabel>
           <FormControl
             type="text"

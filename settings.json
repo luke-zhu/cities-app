@@ -2,6 +2,9 @@
   "public": {
     "google": {
       "apiKey": "AIzaSyCIZ5ZYiz7TZiDoy-vDZJMlMyWaWD76k2E"
+    },
+    "wunderground": {
+      "keyID": "082fb397d28fe966"
     }
   },
   "private": {
